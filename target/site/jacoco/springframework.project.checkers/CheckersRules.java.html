@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CheckersRules.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-complete</a> &gt; <a href="index.source.html" class="el_package">springframework.project.checkers</a> &gt; <span class="el_source">CheckersRules.java</span></div><h1>CheckersRules.java</h1><pre class="source lang-java linenums">package springframework.project.checkers;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import springframework.project.game.Board;
+import springframework.project.game.Position;
+import springframework.project.game.exceptions.InvalidMoveException;
+
+<span class="nc" id="L15">public class CheckersRules {</span>
+
+    /**
+     * Initializes a board placing dics given its dimension
+     * 
+     * @param dimension
+     * @return Board
+     */
+    public static Board initBoard(Integer dimension) {
+<span class="fc" id="L24">        Boolean place = Boolean.TRUE;</span>
+<span class="fc" id="L25">        Integer midField = dimension / 2;</span>
+
+<span class="fc" id="L27">        Disc whiteDisc = new Disc(ColorType.WHITE, Boolean.FALSE);</span>
+<span class="fc" id="L28">        Disc blackDisc = new Disc(ColorType.BLACK, Boolean.FALSE);</span>
+
+<span class="fc" id="L30">        List&lt;Disc&gt; byColumns = new ArrayList&lt;&gt;(dimension);</span>
+<span class="fc" id="L31">        List&lt;Disc&gt; oddColumns = new ArrayList&lt;&gt;(dimension);</span>
+
+<span class="fc bfc" id="L33" title="All 4 branches covered.">        for (int pos = 0; pos &lt; dimension; pos++, place = !place) {</span>
+<span class="fc bfc" id="L34" title="All 4 branches covered.">            if (pos == midField || pos == midField - 1) {</span>
+<span class="fc" id="L35">                oddColumns.add(null);</span>
+<span class="fc" id="L36">                byColumns.add(null);</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            } else if (pos &lt; midField) {</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">                oddColumns.add(place ? whiteDisc : null);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">                byColumns.add(!place ? whiteDisc : null);</span>
+            } else {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">                oddColumns.add(place ? blackDisc : null);</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">                byColumns.add(!place ? blackDisc : null);</span>
+            }
+        }
+
+<span class="fc" id="L46">        List&lt;List&lt;Disc&gt;&gt; board = new ArrayList&lt;&gt;(dimension);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for (int column = 0; column &lt; dimension; column++) {</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            board.add(column % 2 == 0 ? byColumns : oddColumns);</span>
+        }
+
+<span class="fc" id="L51">        return new Board(board);</span>
+    }
+
+    /**
+     * Move a piece to the tile(s) choosen
+     * 
+     * @param board
+     * @param actualPos
+     * @param positions
+     * @return
+     * @throws InvalidMoveException
+     */
+    public static Board movePiece(Board board, Position actualPos, List&lt;Position&gt; positions)
+            throws InvalidMoveException {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (board.isPiece(actualPos))</span>
+<span class="fc" id="L66">            return movePiece(board, actualPos, positions, Boolean.FALSE);</span>
+        else
+<span class="fc" id="L68">            throw new InvalidMoveException(&quot;There is no disc in that position&quot;);</span>
+    }
+
+    private static Board movePiece(Board board, Position actualPos, List&lt;Position&gt; positions, Boolean hasAttacked)
+            throws InvalidMoveException {
+<span class="fc" id="L73">        Integer numberOfMoves = positions.size();</span>
+        Position nextPos;
+<span class="fc bfc" id="L75" title="All 3 branches covered.">        switch (numberOfMoves) {</span>
+            case 0:
+<span class="fc" id="L77">                throw new InvalidMoveException(&quot;There are no moves especified&quot;);</span>
+            case 1:
+                // Check single step
+<span class="fc" id="L80">                nextPos = positions.remove(0);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">                if(!board.isInBoard(nextPos)){</span>
+<span class="fc" id="L82">                    throw new InvalidMoveException(&quot;Invalid position&quot;);</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">                }else if (board.isPiece(nextPos)) {</span>
+<span class="fc" id="L84">                    throw new InvalidMoveException(&quot;Cannot move to an occupied tile&quot;);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">                } else if (isSingleStep(actualPos, nextPos)) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">                    if (hasAttacked.equals(Boolean.FALSE)) {</span>
+<span class="fc" id="L87">                        board = moveSingleStep(board, actualPos, nextPos);</span>
+                    } else {
+<span class="fc" id="L89">                        throw new InvalidMoveException(</span>
+                                &quot;Single step is not allowed if the player has previously attacked&quot;);
+                    }
+                } else {
+<span class="fc" id="L93">                    board = moveAttack(board, actualPos, nextPos);</span>
+                }
+<span class="fc" id="L95">                return board;</span>
+            default:
+<span class="fc" id="L97">                nextPos = positions.remove(0);</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">                if(!board.isInBoard(nextPos)){</span>
+<span class="nc" id="L99">                    throw new InvalidMoveException(&quot;Invalid position&quot;);</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">                }else if (isSingleStep(actualPos, nextPos)) {</span>
+<span class="fc" id="L101">                    throw new InvalidMoveException(&quot;Moves are not allowed&quot;);</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">                } else if (board.isPiece(nextPos)) {</span>
+<span class="fc" id="L103">                    throw new InvalidMoveException(&quot;Cannot move to an occupied tile&quot;);</span>
+                } else {
+<span class="fc" id="L105">                    board = moveAttack(board, actualPos, nextPos);</span>
+<span class="fc" id="L106">                    board = movePiece(board, nextPos, positions, Boolean.TRUE);</span>
+<span class="fc" id="L107">                    return board;</span>
+                }
+        }
+    }
+
+    private static Boolean isSingleStep(Position actualPos, Position nextPos) throws InvalidMoveException {
+<span class="fc" id="L113">        Integer distanceCol = Math.abs(nextPos.getCol() - actualPos.getCol());</span>
+<span class="fc" id="L114">        Integer distanceRow = Math.abs(nextPos.getRow() - actualPos.getRow());</span>
+<span class="fc bfc" id="L115" title="All 4 branches covered.">        if (distanceCol == 1 &amp;&amp; distanceRow == 1) {</span>
+<span class="fc" id="L116">            return Boolean.TRUE;</span>
+        } else {
+<span class="fc" id="L118">            return Boolean.FALSE;</span>
+        }
+    }
+
+    private static Boolean isCorrectDirection(Position actualPos, Position nextPos, Disc disc) {
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (disc.getPromoted().equals(Boolean.TRUE)) {</span>
+<span class="fc" id="L124">            return Boolean.TRUE;</span>
+        } else {
+<span class="fc" id="L126">            Integer direction = nextPos.getRow() - actualPos.getRow();</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">            if (direction &gt; 0) {</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">                return disc.getColor().equals(ColorType.WHITE) ? Boolean.TRUE : Boolean.FALSE;</span>
+            } else {
+<span class="fc bfc" id="L130" title="All 2 branches covered.">                return disc.getColor().equals(ColorType.BLACK) ? Boolean.TRUE : Boolean.FALSE;</span>
+            }
+        }
+    }
+
+    private static Boolean isMoveDiagonal(Position actualPos, Position nextPos) throws InvalidMoveException {
+<span class="fc" id="L136">        Integer distanceCol = Math.abs(nextPos.getCol() - actualPos.getCol());</span>
+<span class="fc" id="L137">        Integer distanceRow = Math.abs(nextPos.getRow() - actualPos.getRow());</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (distanceCol.equals(distanceRow)) {</span>
+<span class="fc" id="L139">            return Boolean.TRUE;</span>
+        } else {
+<span class="fc" id="L141">            return Boolean.FALSE;</span>
+        }
+
+    }
+
+    private static Board moveSingleStep(Board board, Position actualPos, Position nextPos) throws InvalidMoveException {
+<span class="fc" id="L147">        Disc disc = board.get(actualPos);</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (!isCorrectDirection(actualPos, nextPos, disc)) {</span>
+<span class="fc" id="L149">            throw new InvalidMoveException(&quot;Disc cannot move in that direction&quot;);</span>
+        } else {
+<span class="fc" id="L151">            disc = checkPromoted(board, nextPos, disc);</span>
+<span class="fc" id="L152">            board.set(nextPos, disc);</span>
+<span class="fc" id="L153">            board.set(actualPos, null);</span>
+<span class="fc" id="L154">            return board;</span>
+        }
+    }
+
+    private static Board moveAttack(Board board, Position actualPos, Position nextPos) throws InvalidMoveException {
+<span class="fc" id="L159">        Disc disc = board.get(actualPos);</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        if (!isMoveDiagonal(actualPos, nextPos)) {</span>
+<span class="fc" id="L161">            throw new InvalidMoveException(&quot;Move is not diagonal&quot;);</span>
+<span class="pc bpc" id="L162" title="1 of 2 branches missed.">        } else if (!isCorrectDirection(actualPos, nextPos, disc)) {</span>
+<span class="nc" id="L163">            throw new InvalidMoveException(&quot;Disc cannot move in that direction&quot;);</span>
+        } else {
+<span class="fc" id="L165">            disc = checkPromoted(board, nextPos, disc);</span>
+
+<span class="fc" id="L167">            Integer distance = (Math.abs(nextPos.getCol() - actualPos.getCol()) +</span>
+<span class="fc" id="L168">                    Math.abs(nextPos.getRow() - actualPos.getRow())) / 2;</span>
+
+            // Calculate position under attack
+<span class="fc" id="L171">            Integer colDisplacement = (nextPos.getCol() - actualPos.getCol()) / 2;</span>
+<span class="fc" id="L172">            Integer rowDisplacement = (nextPos.getRow() - actualPos.getRow()) / 2;</span>
+<span class="fc" id="L173">            Position underAtkPosition = new Position(actualPos.getCol() + colDisplacement,</span>
+<span class="fc" id="L174">                    actualPos.getRow() + rowDisplacement);</span>
+<span class="fc" id="L175">            Disc discUnderAttack = board.get(underAtkPosition);</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            if(discUnderAttack instanceof Disc){</span>
+<span class="fc bfc" id="L177" title="All 4 branches covered.">                if (disc.getColor().equals(discUnderAttack.getColor()) || !distance.equals(2)) {</span>
+<span class="fc" id="L178">                    throw new InvalidMoveException(&quot;Move not allowed&quot;);</span>
+                } else {
+<span class="fc" id="L180">                    board.set(nextPos, disc);</span>
+<span class="fc" id="L181">                    board.set(actualPos, null);</span>
+<span class="fc" id="L182">                    board.set(underAtkPosition, null);</span>
+<span class="fc" id="L183">                    return board;</span>
+                }
+            }else{
+<span class="fc" id="L186">                throw new InvalidMoveException(&quot;There is no disc to attack&quot;);</span>
+            }
+        }
+    }
+
+    private static Disc checkPromoted(Board board, Position actualPos, Disc disc) {
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        Integer promotionRow = disc.getColor().equals(ColorType.WHITE) ? board.getDimension() - 1 : 0;</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        if (actualPos.getRow().equals(promotionRow)) {</span>
+<span class="fc" id="L194">            disc.setPromoted(Boolean.TRUE);</span>
+        }
+<span class="fc" id="L196">        return disc;</span>
+    }
+
+    /**
+     * Look for available moves given a color
+     * 
+     * @param board
+     * @param color
+     * @return Map&lt;Position, Set&lt;Position&gt;&gt;
+     * @throws InvalidMoveException
+     */
+    public static Map&lt;Position, Set&lt;Position&gt;&gt; availableMoves(Board board, ColorType color)
+            throws InvalidMoveException {
+
+<span class="nc" id="L210">        Map&lt;Position, Set&lt;Position&gt;&gt; availableMoves = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L212">        Map&lt;Position, Disc&gt; pieces = board.getPieces();</span>
+<span class="nc" id="L213">        Set&lt;Position&gt; positions = pieces.keySet();</span>
+
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        for (Iterator&lt;Position&gt; it = positions.iterator(); it.hasNext();) {</span>
+<span class="nc" id="L216">            Position pos = it.next();</span>
+<span class="nc" id="L217">            Disc disc = pieces.get(pos);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">            if (disc.getColor().equals(color)) {</span>
+<span class="nc" id="L219">                Set&lt;Position&gt; moves = checkMoves(board, pos);</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">                if (moves.size() &gt; 0) {</span>
+<span class="nc" id="L221">                    availableMoves.putIfAbsent(pos, moves);</span>
+                }
+            }
+<span class="nc" id="L224">        }</span>
+
+<span class="nc" id="L226">        return availableMoves;</span>
+    }
+
+    /**
+     * Check available moves for an specific piece in the board
+     * 
+     * @param board
+     * @param actualPos
+     * @param disc
+     * @return Set&lt;Position&gt;
+     * @throws InvalidMoveException
+     */
+    public static Set&lt;Position&gt; checkMoves(Board board, Position actualPos) throws InvalidMoveException {
+<span class="fc" id="L239">        Set&lt;Position&gt; moves = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L240">        Disc disc = board.get(actualPos);</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        if (disc instanceof Disc)</span>
+<span class="fc" id="L242">            return checkMoves(board, actualPos, disc, moves, Boolean.FALSE);</span>
+        else
+<span class="fc" id="L244">            throw new InvalidMoveException(&quot;There is no dic in position &quot; + actualPos.toString());</span>
+    }
+
+    private static Set&lt;Position&gt; checkMoves(Board board, Position actualPos,
+            Disc disc, Set&lt;Position&gt; moves, Boolean hasAttacked) {
+<span class="fc" id="L249">        Integer actualCol = actualPos.getCol();</span>
+<span class="fc" id="L250">        Integer actualRow = actualPos.getRow();</span>
+
+<span class="pc bpc" id="L252" title="1 of 2 branches missed.">        if (board.isInBoard(actualCol, actualRow)) {</span>
+            // Promote disc
+<span class="fc" id="L254">            disc = checkPromoted(board, actualPos, disc);</span>
+
+<span class="fc bfc" id="L256" title="All 2 branches covered.">            if (hasAttacked.equals(Boolean.FALSE)) {</span>
+                // Check available single step moves
+<span class="fc" id="L258">                moves.addAll(checkSingleStepMoves(board, actualPos, disc));</span>
+            }
+            // Check available
+<span class="fc" id="L261">            Set&lt;Position&gt; attackTiles = checkAttackMoves(board, actualPos, disc, moves);</span>
+<span class="fc" id="L262">            moves.addAll(attackTiles);</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">            for (Iterator&lt;Position&gt; it = attackTiles.iterator(); it.hasNext();) {</span>
+<span class="fc" id="L264">                Position newPos = it.next();</span>
+<span class="fc" id="L265">                moves.addAll(checkMoves(board, newPos, disc, moves, Boolean.TRUE));</span>
+<span class="fc" id="L266">            }</span>
+        }
+<span class="fc" id="L268">        return moves;</span>
+    }
+
+    private static Set&lt;Position&gt; checkSingleStepMoves(Board board, Position actualPos, Disc disc) {
+<span class="fc" id="L272">        return checkSingleStepMoves(board, actualPos, disc, 1);</span>
+    }
+
+    private static Set&lt;Position&gt; checkSingleStepMoves(Board board, Position actualPos, Disc disc, Integer inversed) {
+<span class="fc" id="L276">        Set&lt;Position&gt; moves = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L277" title="All 2 branches covered.">        final Integer DIRECTION = disc.getColor().equals(ColorType.WHITE) ? 1 : -1;</span>
+<span class="fc" id="L278">        Integer col = actualPos.getCol();</span>
+<span class="fc" id="L279">        Integer row = actualPos.getRow();</span>
+
+        // Check both column options for a disc
+<span class="fc" id="L282">        Integer[] options = { 1, -1 };</span>
+<span class="fc bfc" id="L283" title="All 2 branches covered.">        for (Integer option : options) {</span>
+<span class="fc" id="L284">            Integer checkCol = col + option;</span>
+<span class="fc" id="L285">            Integer checkRow = row + (DIRECTION * inversed);</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">            if (board.isInBoard(checkCol, checkRow)) {</span>
+<span class="fc bfc" id="L287" title="All 2 branches covered.">                if (!board.isPiece(checkCol, checkRow)) {</span>
+                    // Tile must exist and must be empty
+<span class="fc" id="L289">                    moves.add(new Position(checkCol, checkRow));</span>
+                }
+            }
+        }
+        // If promoted check the inverse path
+<span class="fc bfc" id="L294" title="All 4 branches covered.">        if (disc.getPromoted().equals(Boolean.TRUE) &amp;&amp; inversed.equals(1)) {</span>
+<span class="fc" id="L295">            moves.addAll(checkSingleStepMoves(board, actualPos, disc, -1));</span>
+        }
+<span class="fc" id="L297">        return moves;</span>
+    }
+
+    private static Set&lt;Position&gt; checkAttackMoves(Board board, Position actualPos, Disc disc, Set&lt;Position&gt; prevMoves) {
+<span class="fc" id="L301">        return checkAttackMoves(board, actualPos, disc, prevMoves, 1);</span>
+    }
+
+    private static Set&lt;Position&gt; checkAttackMoves(Board board, Position actualPos, Disc disc, Set&lt;Position&gt; prevMoves,
+            Integer inversed) {
+<span class="fc" id="L306">        Set&lt;Position&gt; moves = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L307">        ColorType color = disc.getColor();</span>
+<span class="fc bfc" id="L308" title="All 2 branches covered.">        final Integer DIRECTION = color.equals(ColorType.WHITE) ? 1 : -1;</span>
+<span class="fc" id="L309">        Integer col = actualPos.getCol();</span>
+<span class="fc" id="L310">        Integer row = actualPos.getRow();</span>
+
+<span class="fc" id="L312">        Integer[] options = { 1, -1 };</span>
+<span class="fc bfc" id="L313" title="All 2 branches covered.">        for (Integer option : options) {</span>
+<span class="fc" id="L314">            Integer checkCol = col + option;</span>
+<span class="fc" id="L315">            Integer checkRow = row + (DIRECTION * inversed);</span>
+<span class="fc bfc" id="L316" title="All 2 branches covered.">            if (board.isInBoard(checkCol, checkRow)) {</span>
+<span class="fc bfc" id="L317" title="All 2 branches covered.">                if (board.isPiece(checkCol, checkRow)) {</span>
+<span class="fc bfc" id="L318" title="All 2 branches covered.">                    if (!board.get(checkCol, checkRow).getColor().equals(color)) {</span>
+                        // Check if there is an enemy disc then checks the next tile
+<span class="fc" id="L320">                        Integer landCol = checkCol + option;</span>
+<span class="fc" id="L321">                        Integer landRow = checkRow + (DIRECTION * inversed);</span>
+<span class="fc bfc" id="L322" title="All 2 branches covered.">                        if (board.isInBoard(landCol, landRow))</span>
+<span class="fc bfc" id="L323" title="All 2 branches covered.">                            if (!board.isPiece(landCol, landRow)) {</span>
+<span class="fc" id="L324">                                Position landPos = new Position(landCol, landRow);</span>
+                                // Check if the position is already an option to avoid stepping back
+<span class="fc" id="L326">                                Boolean posAlreadyFound = prevMoves.stream()</span>
+<span class="fc" id="L327">                                        .filter(p -&gt; p.equals(landPos))</span>
+<span class="fc" id="L328">                                        .findAny()</span>
+<span class="fc" id="L329">                                        .isPresent();</span>
+<span class="fc bfc" id="L330" title="All 2 branches covered.">                                if (posAlreadyFound.equals(Boolean.FALSE))</span>
+<span class="fc" id="L331">                                    moves.add(landPos);</span>
+                            }
+                    }
+                }
+            }
+        }
+        // If promoted check the inverse path
+<span class="fc bfc" id="L338" title="All 4 branches covered.">        if (disc.getPromoted().equals(Boolean.TRUE) &amp;&amp; inversed.equals(1)) {</span>
+<span class="fc" id="L339">            moves.addAll(checkAttackMoves(board, actualPos, disc, prevMoves, -1));</span>
+        }
+<span class="fc" id="L341">        return moves;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

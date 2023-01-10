@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-complete</a> &gt; <a href="index.source.html" class="el_package">springframework.project.configuration</a> &gt; <span class="el_source">SecurityConfiguration.java</span></div><h1>SecurityConfiguration.java</h1><pre class="source lang-java linenums">package springframework.project.configuration;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+<span class="fc" id="L13">public class SecurityConfiguration extends WebSecurityConfigurerAdapter {</span>
+
+    @Autowired
+    DataSource dataSource;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception{
+<span class="fc" id="L20">        http.authorizeRequests()</span>
+<span class="fc" id="L21">            .antMatchers(&quot;/h2-console/**&quot;).permitAll()</span>
+<span class="fc" id="L22">            .antMatchers(&quot;/&quot;).permitAll()</span>
+<span class="fc" id="L23">            .antMatchers(&quot;/games&quot;).permitAll()</span>
+<span class="fc" id="L24">            .antMatchers(&quot;/games/join&quot;).permitAll()</span>
+<span class="fc" id="L25">            .anyRequest().permitAll();</span>
+
+<span class="fc" id="L27">        http.csrf().disable();</span>
+<span class="fc" id="L28">        http.headers().frameOptions().sameOrigin();</span>
+<span class="fc" id="L29">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

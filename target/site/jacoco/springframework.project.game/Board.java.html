@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Board.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-complete</a> &gt; <a href="index.source.html" class="el_package">springframework.project.game</a> &gt; <span class="el_source">Board.java</span></div><h1>Board.java</h1><pre class="source lang-java linenums">package springframework.project.game;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import springframework.project.checkers.Disc;
+
+public class Board {
+    private List&lt;List&lt;Disc&gt;&gt; board;
+    private Integer dimension;
+
+    private static final String ELEMENT_SEPARATOR = &quot;,&quot;;
+    private static final String LIST_SEPARATOR = &quot;;&quot;;
+    public static final String EMPTY = &quot;empty&quot;;
+
+<span class="fc" id="L18">    public Board(List&lt;List&lt;Disc&gt;&gt; board) {</span>
+<span class="fc" id="L19">        this.board = board;</span>
+<span class="fc" id="L20">        this.dimension = board.size();</span>
+<span class="fc" id="L21">    }</span>
+
+    public int getDimension() {
+<span class="fc" id="L24">        return board.size();</span>
+    }
+
+    public Disc get(int col, int row) {
+<span class="fc" id="L28">        return board.get(col).get(row);</span>
+    }
+
+    public void set(int col, int row, Disc disc) {
+<span class="fc" id="L32">        List&lt;Disc&gt; colList = board.get(col);</span>
+<span class="fc" id="L33">        colList.set(row, disc);</span>
+<span class="fc" id="L34">        board.set(col, colList);</span>
+<span class="fc" id="L35">    }</span>
+
+    public Boolean isPiece(int col, int row) {
+<span class="fc" id="L38">        return get(col, row) instanceof Disc;</span>
+    }
+
+    public Boolean isInBoard(int col, int row) {
+<span class="fc bfc" id="L42" title="All 8 branches covered.">        if ((col &gt;= 0 &amp;&amp; col &lt; dimension) &amp;&amp; (row &gt;= 0 &amp;&amp; row &lt; dimension)) {</span>
+<span class="fc" id="L43">            return Boolean.TRUE;</span>
+        } else {
+<span class="fc" id="L45">            return Boolean.FALSE;</span>
+        }
+    }
+
+    public Disc get(Position pos) {
+<span class="fc" id="L50">        return board.get(pos.getCol()).get(pos.getRow());</span>
+    }
+
+    public void set(Position pos, Disc disc) {
+<span class="fc" id="L54">        List&lt;Disc&gt; colList = board.get(pos.getCol());</span>
+<span class="fc" id="L55">        colList.set(pos.getRow(), disc);</span>
+<span class="fc" id="L56">        board.set(pos.getCol(), colList);</span>
+<span class="fc" id="L57">    }</span>
+
+    public Boolean isPiece(Position pos) {
+<span class="fc" id="L60">        return get(pos.getCol(), pos.getRow()) instanceof Disc;</span>
+    }
+
+    public Boolean isInBoard(Position pos) {
+<span class="pc bpc" id="L64" title="3 of 8 branches missed.">        if ((pos.getCol() &gt;= 0 &amp;&amp; pos.getCol() &lt; dimension) &amp;&amp; (pos.getRow() &gt;= 0 &amp;&amp; pos.getRow() &lt; dimension)) {</span>
+<span class="fc" id="L65">            return Boolean.TRUE;</span>
+        } else {
+<span class="fc" id="L67">            return Boolean.FALSE;</span>
+        }
+    }
+
+    public Map&lt;Position, Disc&gt; getPieces() {
+<span class="nc" id="L72">        Map&lt;Position, Disc&gt; pieces = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        for (int col = 0; col &lt; dimension; col++) {</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            for (int row = 0; row &lt; dimension; row++) {</span>
+<span class="nc" id="L75">                Disc disc = get(col, row);</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">                if (disc instanceof Disc) {</span>
+<span class="nc" id="L77">                    pieces.putIfAbsent(new Position(col, row), disc);</span>
+                }
+            }
+        }
+<span class="nc" id="L81">        return pieces;</span>
+    }
+
+    /**
+     * Format e00,e01,..,e0n;e10,e11,..,e1n;...;en0,en1,...enn
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L89">        String bString = &quot;&quot;;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (int col = 0; col &lt; dimension; col++) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">            for (int row = 0; row &lt; dimension; row++) {</span>
+<span class="fc" id="L92">                Disc d = board.get(col).get(row);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">                if (d == null) {</span>
+<span class="fc" id="L94">                    bString += EMPTY;</span>
+                } else {
+<span class="fc" id="L96">                    bString += d.toString();</span>
+                }
+<span class="fc bfc" id="L98" title="All 2 branches covered.">                bString += row == dimension - 1 ? &quot;&quot; : ELEMENT_SEPARATOR;</span>
+
+            }
+<span class="fc bfc" id="L101" title="All 2 branches covered.">            bString += col == dimension - 1 ? &quot;&quot; : LIST_SEPARATOR;</span>
+        }
+<span class="fc" id="L103">        return bString;</span>
+    }
+
+    public static Board toBoard(String bString) {
+<span class="fc" id="L107">        List&lt;List&lt;Disc&gt;&gt; listOfColumns = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L108">        String[] arrayOfColumns = bString.split(LIST_SEPARATOR);</span>
+
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        for (String columnString : arrayOfColumns) {</span>
+<span class="fc" id="L111">            String[] elements = columnString.split(ELEMENT_SEPARATOR);</span>
+<span class="fc" id="L112">            List&lt;Disc&gt; column = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            for (String e : elements) {</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">                if (e.equals(EMPTY)) {</span>
+<span class="fc" id="L115">                    column.add(null);</span>
+                } else {
+<span class="nc" id="L117">                    Disc disc = Disc.toDisc(e);</span>
+<span class="nc" id="L118">                    column.add(disc);</span>
+                }
+            }
+<span class="fc" id="L121">            listOfColumns.add(column);</span>
+        }
+<span class="fc" id="L123">        return new Board(listOfColumns);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

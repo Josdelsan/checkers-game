@@ -1,0 +1,240 @@
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ @icon-font-path:    "../../webjars/bootstrap/fonts/";
+
+ @purple:      #7800bd;
+ @purple: #7800bd;
+ @light-purple:      #b59adf;
+ @grey:       #838789;
+ @background-white: #f1f1f1;
+ @black: black;
+ 
+ @body-bg:                           @background-white;
+ @text-color:                        @light-purple;
+ @link-color:                        @purple;
+ @link-hover-color:                  @purple;
+ 
+ @navbar-default-link-color:         @black;
+ @navbar-default-link-active-color:  @background-white;
+ @navbar-default-link-hover-color:   @background-white;
+ @navbar-default-link-hover-bg:      @purple;
+ @navbar-default-toggle-icon-bar-bg: @black;
+ @navbar-default-toggle-hover-bg:    transparent;
+ @navbar-default-link-active-bg:     @purple;
+ 
+ @border-radius-base:             0;
+ @border-radius-large:            0;
+ @border-radius-small:            0;
+ 
+ @btn-default-color:              @black;
+ @btn-default-bg:                 @light-purple;
+ @btn-default-border:             @purple;
+ 
+ @nav-tabs-active-link-hover-color:        @black;
+ @nav-tabs-active-link-hover-bg:           @light-purple;
+ @nav-tabs-active-link-hover-border-color: @light-purple;
+ @nav-tabs-border-color:                   @light-purple;
+ 
+ @pagination-active-bg:                    @light-purple;
+ @pagination-active-border:                @purple;
+ @table-border-color:                      @light-purple;
+ 
+ .table > thead > tr > th {
+   background-color: lighten(@light-purple, 3%);
+   color: @black;
+ }
+ 
+ .table-filter {
+   background-color: @light-purple;
+   padding: 9px 12px;
+ }
+ 
+ .nav > li > a {
+   color: @grey;
+ }
+ 
+ .btn-default {
+   border-width: 2px;
+   transition: border 0.15s;
+   -webkit-transition: border 0.15s;
+   -moz-transition: border 0.15s;
+   -o-transition: border 0.15s;
+   -ms-transition: border 0.15s;
+ 
+   &:hover,
+   &:focus,
+   &:active,
+   &.active,
+   .open .dropdown-toggle& {
+     background-color: @light-purple;
+     border-color: @light-purple;
+   }
+ }
+ 
+ 
+ .container .text-muted {
+   margin: 20px 0;
+ }
+ 
+ code {
+   font-size: 80%;
+ }
+ 
+ .xd-container {
+   margin-top: 40px;
+   margin-bottom: 100px;
+   padding-left: 5px;
+   padding-right: 5px;
+ }
+ 
+ h1 {
+   margin-bottom: 15px
+ }
+ 
+ .index-page--subtitle {
+   font-size: 16px;
+   line-height: 24px;
+   margin: 0 0 30px;
+ }
+ 
+ .form-horizontal button.btn-inverse {
+   margin-left: 32px;
+ }
+ 
+ #job-params-modal .modal-dialog {
+   width: 90%;
+   margin-left:auto;
+   margin-right:auto;
+ }
+ 
+ [ng-cloak].splash {
+   display: block !important;
+ }
+ [ng-cloak] {
+   display: none;
+ }
+ 
+ .splash {
+   background: @purple;
+   color: @light-purple;
+   display: none;
+ }
+ 
+ .error-page {
+   margin-top: 100px;
+   text-align: center;
+ }
+ 
+ .error-page .error-title {
+   font-size: 24px;
+   line-height: 24px;
+   margin: 30px 0 0;
+ }
+ 
+ table td {
+   vertical-align: middle;
+ }
+ 
+ table td .progress {
+   margin-bottom: 0;
+ }
+ 
+ table td.action-column {
+   width: 1px;
+ }
+ 
+ .help-block {
+   color: lighten(@text-color, 50%); // lighten the text some for contrast
+ }
+ 
+ .xd-containers {
+   font-size: 15px;
+ }
+ 
+ .cluster-view > table td {
+   vertical-align: top;
+ }
+ 
+ .cluster-view .label, .cluster-view .column-block {
+   display: block;
+ }
+ 
+ .cluster-view .input-group-addon {
+   width: 0%;
+ }
+ 
+ .cluster-view {
+   margin-bottom: 0;
+ }
+ 
+ .deployment-status-deployed {
+   .label-success;
+ }
+ 
+ .deployment-status-incomplete {
+   .label-warning;
+ }
+ 
+ .deployment-status-failed {
+   .label-danger;
+ }
+ 
+ .deployment-status-deploying {
+   .label-info
+ }
+ .deployment-status-na {
+ }
+ 
+ .container-details-table th {
+   background-color: lighten(@light-purple, 3%);
+   color: @black;
+ }
+ 
+ .status-help-content-table td {
+   color: @light-purple;
+ }
+ 
+ .alert-success {
+   .alert-variant(fade(@alert-success-bg, 70%); @alert-success-border; @alert-success-text);
+ }
+ .alert-info {
+   .alert-variant(fade(@alert-info-bg, 70%); @alert-info-border; @alert-info-text);
+ }
+ .alert-warning {
+   .alert-variant(fade(@alert-warning-bg, 70%); @alert-warning-border; @alert-warning-text);
+ }
+ .alert-danger {
+   .alert-variant(fade(@alert-danger-bg, 70%); @alert-danger-border; @alert-danger-text);
+ }
+ 
+ .myspinner {
+   animation-name: spinner;
+   animation-duration: 2s;
+   animation-iteration-count: infinite;
+   animation-timing-function: linear;
+ 
+   -webkit-transform-origin: 49% 50%;
+   -webkit-animation-name: spinner;
+   -webkit-animation-duration: 2s;
+   -webkit-animation-iteration-count: infinite;
+   -webkit-animation-timing-function: linear;
+ }
+ 
+ hr {
+   border-top: 1px solid @light-purple;
+ }
+ 
+ @import "typography.less";
+ @import "header.less";
+ @import "responsive.less";
